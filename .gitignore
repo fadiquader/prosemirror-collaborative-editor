@@ -23,4 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 .idea
 .env
-.y-db.js
+y-db.js
