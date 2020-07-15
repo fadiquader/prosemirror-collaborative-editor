@@ -3,7 +3,7 @@
 
 To start the server:
 
-### `yarn server`
+### `cd server`
 ### `yarn dev`
 
 
