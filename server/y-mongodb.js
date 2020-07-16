@@ -6,7 +6,7 @@ const { Buffer } = require('buffer');
 
 const { MongoAdapter } = require("./mongo-adapter");
 
-const PREFERRED_TRIM_SIZE = 200;
+const PREFERRED_TRIM_SIZE = 400;
 
 const clearUpdatesRange = async (db, docName, from, to) => db.del({
   docName,
@@ -83,7 +83,7 @@ const storeUpdate = async (db, docName, update) => {
   return clock + 1
 };
 
-class LeveldbPersistence {
+class MongodbPersistence {
   constructor(location, collection) {
     const db = new MongoAdapter(location, collection);
     this.tr = promise.resolve();
@@ -132,6 +132,17 @@ class LeveldbPersistence {
   storeUpdate(docName, update) {
     return this._transact(db => storeUpdate(db, docName, update))
   }
+
+  /**
+   * @param {string} docName
+   * @return {Promise<void>}
+   */
+  clearDocument (docName) {
+    return this._transact(async db => {
+      await db.del(createDocumentStateVectorKey(docName));
+      await clearUpdatesRange(db, docName, 0, binary.BITS32,);
+    })
+  }
 }
 
-module.exports.LeveldbPersistence = LeveldbPersistence;
+module.exports.MongodbPersistence = MongodbPersistence;

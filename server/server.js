@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const http = require('http');
 const WebSocket = require('ws');
@@ -6,23 +5,23 @@ const Y = require('yjs');
 const { Buffer } = require('buffer');
 
 const utils = require('y-websocket/bin/utils.js');
-const { LeveldbPersistence } = require('./y-mongodb');
+const { MongodbPersistence } = require('./y-mongodb');
 
 const location = process.env.MONGODB_URI;
 const collection = 'YjsWriting';
-const ldb = new LeveldbPersistence(location, collection);
+const ldb = new MongodbPersistence(location, collection);
 
 const production = process.env.PRODUCTION != null;
 const port = process.env.PORT || 8080;
 
 
 const server = http.createServer((request, response) => {
-    response.writeHead(200, { 'Content-Type': 'text/plain' })
-    response.end('okay')
+    response.writeHead(200, { 'Content-Type': 'text/plain' });
+    response.end('okay');
 });
 
 
-// const wss = new WebSocket.Server({ server })
+// const wss = new WebSocket.Server({ server });
 const wss = new WebSocket.Server({  noServer: true })
 
 wss.on('connection', utils.setupWSConnection);
